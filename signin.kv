@@ -6,19 +6,17 @@
         size_hint_y: None
         height: 50
         Label:
-            text:"Acess Control"
+            text:"Access Control"
             bold: True
             size_hint_x: .9
         Button:
             text:"X"
-            background_color:
             size_hint_x: .1
-
     BoxLayout:
         orientation: "vertical"
         TextInput:
-            on_hint_text: "Username"
+            hint_text: "Username"
         TextInput:
-             on_hint_text: "Password"
+            hint_text: "Password"
     Button:
-        text:"Sign"
+        text: "Sign In"
