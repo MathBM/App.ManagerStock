@@ -1,0 +1,70 @@
+<FlatButton@ButtonBehavior+Label>:
+    font_size: 14
+
+<OperatorWindow>:
+    id: main_win
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: (1, 1, 1, 1)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+     BoxLayout:
+        id: header
+        size_hint_y: None
+        height:40
+        canvas.before:
+            Color:
+                rgba: (.06, .45, .45, .50)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            text: 'Silver Stone POS System'
+            size_hint_x: .9
+            bold: True
+            color: (1, 1, 1, 1)
+        Button:
+            id: loggedin_user
+            text: 'Username'
+            color: (1, 1, 1, 1)
+     BoxLayout:
+        id: current
+        size_hint_y: None
+        height: 50
+        canvas.before:
+            Color:
+                rgba: (1, 1, 1, 1)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Button:
+            text: "Current Item"
+            background_normal: ''
+            background_color: (.06, .32, .32, 1)
+            size_hint_x: .4
+        Button:
+            id: cur_product
+            text: 'Default Product'
+            background_normal: ''
+            background_color: (.06, .4, .4, 1)
+        Button:
+            id: cur_price
+            text: '0.00'
+            background_normal: ''
+            background_color: (.06, .65, .65, 1)
+            size_hint_x: .2
+        BoxLayout:
+            BoxLayout:
+                id: product_details
+                orientation: 'vertical'
+                size_hint_x: .8
+                BoxLayout:
+                    id: product_labels
+                    FlatButton:
+                        text:
+            BoxLayout:
+                id: preview
+                orientation: 'vertical'
+                size_hint
