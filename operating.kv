@@ -1,7 +1,7 @@
-<FlatButton@ButtonBehavior+Label>:
+<FlatButton@ButtonBehavior+Label>
     font_size: 14
 
-<OperatorWindow>:
+<OperatingWindow>:
     id: main_win
     orientation: 'vertical'
     canvas.before:
@@ -10,10 +10,10 @@
         Rectangle:
             size: self.size
             pos: self.pos
-     BoxLayout:
+    BoxLayout:
         id: header
         size_hint_y: None
-        height:40
+        height: 40
         canvas.before:
             Color:
                 rgba: (.06, .45, .45, .50)
@@ -21,15 +21,15 @@
                 size: self.size
                 pos: self.pos
         Label:
-            text: 'Silver Stone POS System'
+            text: 'SilverStonePOS System'
             size_hint_x: .9
             bold: True
             color: (1, 1, 1, 1)
-        Button:
+        FlatButton:
             id: loggedin_user
             text: 'Username'
             color: (1, 1, 1, 1)
-     BoxLayout:
+    BoxLayout:
         id: current
         size_hint_y: None
         height: 50
@@ -40,7 +40,7 @@
                 size: self.size
                 pos: self.pos
         Button:
-            text: "Current Item"
+            text: 'Current Item'
             background_normal: ''
             background_color: (.06, .32, .32, 1)
             size_hint_x: .4
@@ -54,17 +54,113 @@
             text: '0.00'
             background_normal: ''
             background_color: (.06, .65, .65, 1)
-            size_hint_x: .2
+    BoxLayout:
+        padding: 10
         BoxLayout:
+            id: product_details
+            orientation: 'vertical'
+            size_hint_x: .8
+            spacing: 10
             BoxLayout:
-                id: product_details
+                id: product_labels
+                size_hint_y: None
+                height: 40
+                canvas.before:
+                    Color:
+                        rgba: (.06, .45, .45, .50)
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+
+                FlatButton:
+                    text: 'Qty'
+                    size_hint_x: .1
+                FlatButton:
+                    text: 'Product Code'
+                    size_hint_x: .3
+                FlatButton:
+                    text: 'Disc'
+                    size_hint_x: .1
+                FlatButton:
+                    text: 'Disc %'
+                    size_hint_x: .1
+                FlatButton:
+                    text: 'VAT'
+                    size_hint_x: .1
+                FlatButton:
+                    text: 'Price'
+                    size_hint_x: .1
+                FlatButton:
+                    text: 'Product Total'
+                    size_hint_x: .2
+            BoxLayout:
+                id: product_inputs
+                size_hint_y: None
+                height: 30
+                spacing: 5
+                TextInput:
+                    id: qty_inp
+                    size_hint_x: .1
+                TextInput:
+                    id: code_inp
+                    size_hint_x: .3
+                    multiline: False
+                    on_text_validate: root.update_purchases()
+                TextInput:
+                    id: disc_input
+                    size_hint_x: .1
+                TextInput:
+                    id: disc_perc_inp
+                    size_hint_x: .1
+                TextInput:
+                    id: vat_inp
+                    size_hint_x: .1
+                TextInput:
+                    id: price_input
+                    size_hint_x: .1
+                TextInput:
+                    id: total_inp
+                    size_hint_x: .2
+            BoxLayout:
+                id: add_to_cart
                 orientation: 'vertical'
-                size_hint_x: .8
                 BoxLayout:
-                    id: product_labels
-                    FlatButton:
-                        text:
-            BoxLayout:
-                id: preview
-                orientation: 'vertical'
-                size_hint
+                    size_hint_y: None
+                    height: 30
+                    canvas.before:
+                        Color:
+                            rgba: (.06, .45, .45, 1)
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                    Label:
+                        text: 'Code'
+                        size_hint_x: .2
+                    Label:
+                        text: 'Product Name'
+                        size_hint_x: .3
+                    Label:
+                        text: 'Qty'
+                        size_hint_x: .1
+                    Label:
+                        text: 'Disc'
+                        size_hint_x: .1
+                    Label:
+                        text: 'Price'
+                        size_hint_x: .1
+                    Label:
+                        text: 'Product total'
+                        size_hint_x: .2
+                GridLayout:
+                    id: products
+                    cols: 1
+
+        BoxLayout:
+            id: preview
+            orientation: 'vertical'
+            size_hint_x: .2
+
+            TextInput:
+                id: recept_preview
+                readonly: True
+                text: 'The Collector\n123 Main St\nKnowhere, Space\n\nTel: (55)-123-456\nReceipt No: \nData: \n\n'
