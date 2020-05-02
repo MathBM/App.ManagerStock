@@ -47,7 +47,6 @@ class OperatingWindow(BoxLayout):
             _prev = prev_text.find('`')
             if _prev > 0:
                 prev_text = prev_text[:_prev]
-
             ptarget = -1
             for i, c in enumerate(self.cart):
                 if c == pcode:
