@@ -7,6 +7,9 @@ import re
 class OperatingWindow(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        """client = MongoClient()
+        self.db = client.silverpos
+        self.stocks = self.db.stocks"""
 
         self.cart = []
         self.qty = []
@@ -15,15 +18,19 @@ class OperatingWindow(BoxLayout):
     def update_purchases(self):
         pcode = self.ids.code_inp.text
         products_container = self.ids.products
-        if pcode == '1234' or pcode == '2345':
+
+        target_code = self.stocks.find_one({'product_code': pcode})
+        if target_code is None:
+            pass
+        else:
             details = BoxLayout(size_hint_y=None, height=30, pos_hint={'top': 1})
             products_container.add_widget(details)
 
             code = Label(text=pcode, size_hint_x=.2, color=(.06, .45, .45, 1))
-            name = Label(text="Product One", size_hint_x=.3, color=(.06, .45, .45, 1))
+            name = Label(text=target_code['product_name'], size_hint_x=.3, color=(.06, .45, .45, 1))
             qty = Label(text="1", size_hint_x=.1, color=(.06, .45, .45, 1))
             disc = Label(text="0.00", size_hint_x=.1, color=(.06, .45, .45, 1))
-            price = Label(text="0.00", size_hint_x=.1, color=(.06, .45, .45, 1))
+            price = Label(text=target_code['product_price'], size_hint_x=.1, color=(.06, .45, .45, 1))
             total = Label(text="0.00", size_hint_x=.2, color=(.06, .45, .45, 1))
             details.add_widget(code)
             details.add_widget(name)
@@ -34,9 +41,7 @@ class OperatingWindow(BoxLayout):
 
             # Update Preview
             pname = "Product One"
-            if pcode == '2345':
-                pname = "Product Two"
-            pprice = 1.00
+            pprice = float(price.text)
             pqty = str(1)
             self.total += pprice
             purchase_total = '`\n\nTotal\t\t\t\t\t\t\t\t'+str(self.total)
