@@ -1,19 +1,17 @@
-from sqlite3 import connect
-import os.path
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from Data.Data_Base_Conection import ClientDB
 from collections import OrderedDict
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, "SilverPOS.db")
 
+class AdminWindow(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.db = ClientDB("SilverPOS.db")
+        self.get_users()
+        self.get_products()
 
-class GetInformation:
-
-    def get_users():
-        client = connect(db_path)
-        db = client.cursor()
-        db.execute("""
-        SELECT first_names, last_names, user_names, passwords FROM USERS
-        """)
+    def get_users(self):
         _users = OrderedDict(
             first_names={},
             last_names={},
@@ -24,12 +22,12 @@ class GetInformation:
         last_names = []
         user_names = []
         passwords = []
-        for line in db.fetchall():
+
+        for line in self.db.cursor.fetchall():
             first_names.append(line[0])
             last_names.append(line[1])
             user_names.append(line[2])
             passwords.append(line[3])
-        db.close()
         users_length = len(first_names)
         idx = 0
         while idx < users_length:
@@ -39,14 +37,9 @@ class GetInformation:
             _users['passwords'][idx] = passwords[idx]
 
             idx += 1
-        return _users
+            return _users
 
-    def get_products():
-        client = connect(db_path)
-        db = client.cursor()
-        db.execute("""
-        SELECT product_code, product_name, product_weight, qty_stock FROM STOCKS
-        """)
+    def get_products(self):
         _stocks = OrderedDict(
             product_codes={},
             product_names={},
@@ -57,12 +50,11 @@ class GetInformation:
         product_names = []
         product_weighs = []
         qty_stocks = []
-        for line in db.fetchall():
+        for line in self.db.cursor.fetchall():
             product_codes.append(line[0])
             product_names.append(line[1])
             product_weighs.append(line[2])
             qty_stocks.append(line[3])
-        db.close()
         products_length = len(product_codes)
         idx = 0
         while idx < products_length:
@@ -74,3 +66,11 @@ class GetInformation:
         return _stocks
 
 
+class AdminApp(App):
+    def build(self):
+        return AdminWindow()
+
+
+if __name__ == "__main__":
+    adminapplication = AdminApp()
+    adminapplication.run()
