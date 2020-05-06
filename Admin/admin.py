@@ -1,13 +1,14 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
-from Data.Data_Base_Conection import ClientDB
+from Data.Manager_db import ClientDB
 from collections import OrderedDict
+database = r"D:\App.ManagerStock\Data\SilverPOS.db"
 
 
 class AdminWindow(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.db = ClientDB("SilverPOS.db")
+        self.db = ClientDB(database)
         self.get_users()
         self.get_products()
 
@@ -37,7 +38,7 @@ class AdminWindow(BoxLayout):
             _users['passwords'][idx] = passwords[idx]
 
             idx += 1
-            return _users
+        return _users
 
     def get_products(self):
         _stocks = OrderedDict(

@@ -26,6 +26,18 @@ class ClientDB(Access):
     def __init__(self, db_name):
         super().__init__(db_name)
 
+    def create_schema(self, tb_name):
+        schema_name = 'sql/%s_schema.sql' % tb_name
+        print("Creating table %s ..." % tb_name)
+        try:
+            with open(schema_name, 'rt') as f:
+                schema = f.read()
+                self.cursor.executescript(schema)
+        except sqlite3.Error:
+            print("Warning: The table %s exist." % tb_name)
+            return False
+        print("Table %s created successfully" % tb_name)
+
 
 if __name__ == '__main__':
     db = ClientDB("SilverPOS.db")
