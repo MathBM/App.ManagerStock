@@ -1,5 +1,6 @@
 # Class of Python module
 from collections import OrderedDict
+from datetime import datetime
 
 # Class of Kivy module
 from kivy.app import App
@@ -20,7 +21,7 @@ class AdminWindow(BoxLayout):
         self.db = ClientDB(database_dir)
 
         # Display Users
-        content = self.ids.scrn_content
+        content = self.ids.scrn_contents
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
@@ -33,16 +34,28 @@ class AdminWindow(BoxLayout):
 
     def add_user_fields(self):
         target = self.ids.ops_fields
-        crud_first = TextInput(hint_text='First Name')
-        crud_last = TextInput(hint_text='Last Name')
-        crud_user = TextInput(hint_text='User Name')
-        crud_pwd = TextInput(hint_text='Password')
+        crud_first = TextInput(hint_text='First Name', multiline=False)
+        crud_last = TextInput(hint_text='Last Name', multiline=False)
+        crud_user = TextInput(hint_text='User Name', multiline=False)
+        crud_pwd = TextInput(hint_text='Password', multiline=False)
         # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
+        crud_sumit = Button(text='Add', size_hint_x=None, width=100,on_release=lambda x:)
+        self.add_user(crud_first.text, crud_last.txt, crud_user.txt, crud_pwd.txt)
         target.add_widget(crud_first)
         target.add_widget(crud_last)
         target.add_widget(crud_user)
         target.add_widget(crud_pwd)
         # target.add_widget(crud_des)
+        target.add_widget(crud_sumit)
+
+    def add_user(self, first, last, user, pwd):
+        content = self.ids.scrn_contents
+        content.clear_widgets()
+
+        users = self.get_users()
+        userstable = DataTable(table=users)
+        content.add_widget(userstable)
+
 
     # Read information on DB about users
     def get_users(self):
