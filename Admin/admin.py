@@ -39,7 +39,7 @@ class AdminWindow(BoxLayout):
         crud_user = TextInput(hint_text='User Name', multiline=False)
         crud_pwd = TextInput(hint_text='Password', multiline=False)
         # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
-        crud_sumit = Button(text='Add', size_hint_x=None, width=100,on_release=lambda x:)
+        # crud_sumit = Button(text='Add', size_hint_x=None, width=100,on_release=lambda x)
         self.add_user(crud_first.text, crud_last.txt, crud_user.txt, crud_pwd.txt)
         target.add_widget(crud_first)
         target.add_widget(crud_last)
@@ -55,7 +55,6 @@ class AdminWindow(BoxLayout):
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
-
 
     # Read information on DB about users
     def get_users(self):

@@ -38,13 +38,15 @@ class ClientDB(Access):
             return False
         print("Table %s created successfully" % tb_name)
 
-    def input_register(self, table, data):
+    def input_register(self, table, values):
         try:
-            slq_script= ("""
-            INSERT INTO %s (first_names, last_names, user_names, passwords)
-            VALUES(?,?,?,?)
-            """)% table
-            self.cursor.execute(slq_script, data)
+            # data = list(input("Input coluns about database.\n"))
+            data = ['first_name', 'last_name', 'user_name', 'password']
+            for i in range(len(data)-1):
+                slq_script = ("""
+                INSERT INTO %s ( """ + data[i] + """) VALUES(?,?,?,?) """)
+                if i == len(data)-1:
+                    self.cursor.execute(slq_script, values)
             self.commit_on_db()
             print("Successfully inserted record.")
         except sqlite3.IntegrityError:
@@ -54,7 +56,7 @@ class ClientDB(Access):
 
 if __name__ == '__main__':
     db = ClientDB("SilverPOS.db")
-    db.input_register("USERS", ["Marcus", "José", "MJ", "878kl94216"])
+    db.input_register("USERS", ["Mario", "José", "MJ", "878kl94216"])
     db.close_db()
 else:
     Exception("Execution Error")
