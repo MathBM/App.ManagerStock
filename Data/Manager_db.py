@@ -3,6 +3,11 @@ import sqlite3
 
 class Access:
     def __init__(self, db_name):
+        """ Access data base.
+
+            Args:
+                db_name(str): Path or name of DataBase for connection.
+        """
         self.db = db_name
         try:
             self.conn = sqlite3.connect(self.db)
@@ -15,18 +20,38 @@ class Access:
             print("Data Base Error Opening.")
 
     def close_db(self):
+        """ Close connection with DataBase.
+        """
         self.conn.close()
         print("Close Connection")
 
     def commit_on_db(self):
+        """ Save changes in DataBase.
+        """
         self.conn.commit()
 
 
 class ClientDB(Access):
     def __init__(self, db_name):
+        """ ClientDB class is a class for access somes methods for
+        write or read values in db.
+
+        Args:
+            db_name(str): Data Base name.
+        """
         super().__init__(db_name)
 
     def create_schema(self, tb_name):
+        """ Create schema and create new table in DB.
+
+            Args:
+                tb_name(str): Table name for create.
+            Return:
+                False, if table for created is exist.
+            Except:
+                sqlite Error:
+                Warning: The table exist,
+        """
         schema_name = 'sql/%s_schema.sql' % tb_name
         print("Creating table %s ..." % tb_name)
         try:
@@ -38,17 +63,29 @@ class ClientDB(Access):
             return False
         print("Table %s created successfully" % tb_name)
 
-    def input_register(self, table, values):
+    def input_register(self, table, d_values):
+        """ Input Register on Local DB.
+            Args:
+                table(str): Choose table for input data
+                d_values(dict): Keys, cols about Db and Dict Values(D.V.) is a values for data input.
+
+            Return:
+                False, if data input failure.
+
+            Except:
+                Error about sqlite integrity Error, duplicate value.
+        """
+
         try:
-            # data = list(input("Input coluns about database.\n"))
-            data = ['first_name', 'last_name', 'user_name', 'password']
-            for i in range(len(data)-1):
-                slq_script = ("""
-                INSERT INTO %s ( """ + data[i] + """) VALUES(?,?,?,?) """)
-                if i == len(data)-1:
-                    self.cursor.execute(slq_script, values)
-            self.commit_on_db()
-            print("Successfully inserted record.")
+            into = tuple(d_values.keys())
+            slq_script = ("""
+            INSERT INTO {} {}
+             VALUES(?,?,?,?) 
+            """).format(table, into)
+            print(slq_script)
+            values = list(d_values.values())
+            self.cursor.execute(slq_script, values)
+            print("Successfully insertion record.")
         except sqlite3.IntegrityError:
             print("Record insertion failure.")
             return False
@@ -56,7 +93,7 @@ class ClientDB(Access):
 
 if __name__ == '__main__':
     db = ClientDB("SilverPOS.db")
-    db.input_register("USERS", ["Mario", "José", "MJ", "878kl94216"])
+    db.input_register("USERS", {"first_names": "Carlos", "last_names": "Andrade", "user_names": "CA", "passwords": "54616586"})
     db.close_db()
 else:
     Exception("Execution Error")

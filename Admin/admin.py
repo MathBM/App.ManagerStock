@@ -46,7 +46,7 @@ class AdminWindow(BoxLayout):
         target.add_widget(crud_user)
         target.add_widget(crud_pwd)
         # target.add_widget(crud_des)
-        target.add_widget(crud_sumit)
+        # target.add_widget(crud_sumit)
 
     def add_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
