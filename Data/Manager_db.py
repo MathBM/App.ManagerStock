@@ -93,7 +93,8 @@ class ClientDB(Access):
 
 if __name__ == '__main__':
     db = ClientDB("SilverPOS.db")
-    db.input_register("USERS", {"first_names": "Carlos", "last_names": "Andrade", "user_names": "CA", "passwords": "54616586"})
+    # example: db.input_register("USERS", {"first_names": "Carlos", "last_names": "Andrade", "user_names": "CA",
+    # "passwords": "54616586"})
     db.close_db()
 else:
     Exception("Execution Error")

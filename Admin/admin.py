@@ -12,6 +12,7 @@ from kivy.uix.spinner import Spinner
 # Class of Manager Data Base with sqlite
 from Data.Manager_db import ClientDB
 from Utils.datatable import DataTable
+
 database_dir = r"D:\App.ManagerStock\Data\SilverPOS.db"
 
 
@@ -39,18 +40,23 @@ class AdminWindow(BoxLayout):
         crud_user = TextInput(hint_text='User Name', multiline=False)
         crud_pwd = TextInput(hint_text='Password', multiline=False)
         # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
-        # crud_sumit = Button(text='Add', size_hint_x=None, width=100,on_release=lambda x)
-        self.add_user(crud_first.text, crud_last.txt, crud_user.txt, crud_pwd.txt)
+        crud_sumit = Button(text='Add', size_hint_x=None, width=100, on_release=lambda x: self.add_user(crud_first.text,
+                                                                                                        crud_last.text,
+                                                                                                        crud_user.text,
+                                                                                                        crud_pwd.text))
         target.add_widget(crud_first)
         target.add_widget(crud_last)
         target.add_widget(crud_user)
         target.add_widget(crud_pwd)
         # target.add_widget(crud_des)
-        # target.add_widget(crud_sumit)
+        target.add_widget(crud_sumit)
 
     def add_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
         content.clear_widgets()
+
+        self.db.input_register('USERS',
+                               {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
 
         users = self.get_users()
         userstable = DataTable(table=users)
@@ -124,7 +130,7 @@ class AdminWindow(BoxLayout):
         elif instance.text == 'Manage Users':
             self.ids.scrn_mngr.current = 'scrn_content'
         else:
-            self.ids.scrn_mngr.current = 'scrn_analysis' 
+            self.ids.scrn_mngr.current = 'scrn_analysis'
 
 
 class AdminApp(App):
