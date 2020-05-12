@@ -73,21 +73,44 @@ class ClientDB(Access):
                 False, if data input failure.
 
             Except:
-                Error about sqlite integrity Error, duplicate value.
+                Error about sqlite integrity Error, duplicate value or other SQL Error.
         """
-
         try:
             into = tuple(d_values.keys())
             slq_script = ("""
             INSERT INTO {} {}
              VALUES(?,?,?,?) 
             """).format(table, into)
-            print(slq_script)
             values = list(d_values.values())
             self.cursor.execute(slq_script, values)
             print("Successfully insertion record.")
+            self.commit_on_db()
         except sqlite3.IntegrityError:
             print("Record insertion failure.")
+            return False
+
+    def update_register(self, table, d_values):
+        """ Input Register on Local DB.
+            Args:
+                table(str): Choose table for update data
+                d_values(dict): Keys, cols about Db and Dict Values(D.V.) is a values for data input.
+
+            Return:
+                False, if data input failure.
+
+            Except:
+                Error about sqlite integrity Error, duplicate value or other SQL Error.
+        """
+        try:
+            slq_script = ("""
+            UPDATE {} SET {}
+            """).format(table, into)
+            values = list(d_values.values())
+            self.cursor.execute(slq_script, values)
+            print("Successfully update record.")
+            self.commit_on_db()
+        except sqlite3.IntegrityError:
+            print("Updating failure.")
             return False
 
 

@@ -54,10 +54,8 @@ class AdminWindow(BoxLayout):
     def add_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
         content.clear_widgets()
-
         self.db.input_register('USERS',
                                {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
-
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
