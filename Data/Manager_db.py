@@ -79,7 +79,7 @@ class ClientDB(Access):
             into = tuple(d_values.keys())
             slq_script = ("""
             INSERT INTO {} {}
-             VALUES(?,?,?,?) 
+            VALUES(?,?,?,?) 
             """).format(table, into)
             values = list(d_values.values())
             self.cursor.execute(slq_script, values)
@@ -89,24 +89,27 @@ class ClientDB(Access):
             print("Record insertion failure.")
             return False
 
-    def update_register(self, table, d_values):
+    def update_register(self, table, update, where):
         """ Input Register on Local DB.
             Args:
                 table(str): Choose table for update data
-                d_values(dict): Keys, cols about Db and Dict Values(D.V.) is a values for data input.
+                update(str): Set a data for Database.
+                id(int): Choose column with id.
 
             Return:
-                False, if data input failure.
+                False, if data update failure.
 
             Except:
                 Error about sqlite integrity Error, duplicate value or other SQL Error.
+
         """
         try:
             slq_script = ("""
             UPDATE {} SET {}
-            """).format(table, into)
-            values = list(d_values.values())
-            self.cursor.execute(slq_script, values)
+            WHERE {};
+            """).format(table, update, where)
+            print(slq_script)
+            self.cursor.execute(slq_script)
             print("Successfully update record.")
             self.commit_on_db()
         except sqlite3.IntegrityError:
@@ -116,8 +119,8 @@ class ClientDB(Access):
 
 if __name__ == '__main__':
     db = ClientDB("SilverPOS.db")
-    # example: db.input_register("USERS", {"first_names": "Carlos", "last_names": "Andrade", "user_names": "CA",
-    # "passwords": "54616586"})
-    db.close_db()
+    # example: db.update_register('USERS', "first_names = 'Matheus', last_names = 'Vigânigo', user_names = 'viga99',
+    # passwords = '45456521'", 7)
+    # db.close_db()
 else:
     Exception("Execution Error")

@@ -1,13 +1,13 @@
 # Class of Python module
 from collections import OrderedDict
-from datetime import datetime
+# from datetime import datetime
 
-# Class of Kivy module
+# Class of Kivy-module
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.uix.spinner import Spinner
+# from kivy.uix.spinner import Spinner
 
 # Class of Manager Data Base with sqlite
 from Data.Manager_db import ClientDB
@@ -35,21 +35,23 @@ class AdminWindow(BoxLayout):
 
     def add_user_fields(self):
         target = self.ids.ops_fields
+        target.clear_widgets()
         crud_first = TextInput(hint_text='First Name', multiline=False)
         crud_last = TextInput(hint_text='Last Name', multiline=False)
         crud_user = TextInput(hint_text='User Name', multiline=False)
         crud_pwd = TextInput(hint_text='Password', multiline=False)
         # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
-        crud_sumit = Button(text='Add', size_hint_x=None, width=100, on_release=lambda x: self.add_user(crud_first.text,
-                                                                                                        crud_last.text,
-                                                                                                        crud_user.text,
-                                                                                                        crud_pwd.text))
+        crud_submit = Button(text='Add', size_hint_x=None, width=100,
+                             on_release=lambda x: self.add_user(crud_first.text,
+                                                                crud_last.text,
+                                                                crud_user.text,
+                                                                crud_pwd.text))
         target.add_widget(crud_first)
         target.add_widget(crud_last)
         target.add_widget(crud_user)
         target.add_widget(crud_pwd)
         # target.add_widget(crud_des)
-        target.add_widget(crud_sumit)
+        target.add_widget(crud_submit)
 
     def add_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
@@ -59,6 +61,38 @@ class AdminWindow(BoxLayout):
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
+
+    def update_user_fields(self):
+        target = self.ids.ops_fields
+        target.clear_widgets()
+        crud_first = TextInput(hint_text='First Name', multiline=False)
+        crud_last = TextInput(hint_text='Last Name', multiline=False)
+        crud_user = TextInput(hint_text='User Name', multiline=False)
+        crud_pwd = TextInput(hint_text='Password', multiline=False)
+        # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
+        crud_submit = Button(text='Update', size_hint_x=None, width=100,
+                             on_release=lambda x: self.update_user(crud_first.text,
+                                                                   crud_last.text,
+                                                                   crud_user.text,
+                                                                   crud_pwd.text))
+        target.add_widget(crud_first)
+        target.add_widget(crud_last)
+        target.add_widget(crud_user)
+        target.add_widget(crud_pwd)
+        # target.add_widget(crud_des)
+        target.add_widget(crud_submit)
+
+    def update_user(self, first, last, user, pwd):
+        content = self.ids.scrn_contents
+        content.clear_widgets()
+        update = "first_names = '{}', last_names = '{}', user_names = '{}', passwords = '{}'".format(first, last, user,
+                                                                                                     pwd)
+        where = "user_names = '{}'".format()
+        self.db.update_register('USERS', update, where)
+        users = self.get_users()
+        userstable = DataTable(table=users)
+        content.add_widget(userstable)
+
 
     # Read information on DB about users
     def get_users(self):
