@@ -92,9 +92,9 @@ class ClientDB(Access):
     def update_register(self, table, update, where):
         """ Input Register on Local DB.
             Args:
-                table(str): Choose table for update data
+                table(str): Choose table for update data.
                 update(str): Set a data for Database.
-                id(int): Choose column with id.
+                where(str): Choose column with condition.
 
             Return:
                 False, if data update failure.
@@ -108,7 +108,6 @@ class ClientDB(Access):
             UPDATE {} SET {}
             WHERE {};
             """).format(table, update, where)
-            print(slq_script)
             self.cursor.execute(slq_script)
             print("Successfully update record.")
             self.commit_on_db()

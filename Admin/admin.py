@@ -87,12 +87,11 @@ class AdminWindow(BoxLayout):
         content.clear_widgets()
         update = "first_names = '{}', last_names = '{}', user_names = '{}', passwords = '{}'".format(first, last, user,
                                                                                                      pwd)
-        where = "user_names = '{}'".format()
+        where = "user_names = '{}'".format(user)
         self.db.update_register('USERS', update, where)
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
-
 
     # Read information on DB about users
     def get_users(self):
