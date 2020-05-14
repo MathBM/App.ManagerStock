@@ -33,6 +33,7 @@ class AdminWindow(BoxLayout):
         prod_table = DataTable(table=products)
         product_scrn.add_widget(prod_table)
 
+    # Fields for type information when add.
     def add_user_fields(self):
         target = self.ids.ops_fields
         target.clear_widgets()
@@ -53,6 +54,7 @@ class AdminWindow(BoxLayout):
         # target.add_widget(crud_des)
         target.add_widget(crud_submit)
 
+    # add user in DB
     def add_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
         content.clear_widgets()
@@ -62,6 +64,7 @@ class AdminWindow(BoxLayout):
         userstable = DataTable(table=users)
         content.add_widget(userstable)
 
+    # Fields for type information when update.
     def update_user_fields(self):
         target = self.ids.ops_fields
         target.clear_widgets()
@@ -82,6 +85,7 @@ class AdminWindow(BoxLayout):
         # target.add_widget(crud_des)
         target.add_widget(crud_submit)
 
+    # Update user in DB. The key is user_name
     def update_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
         content.clear_widgets()
@@ -92,6 +96,27 @@ class AdminWindow(BoxLayout):
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
+
+    # Fields for type information when remove.
+    def remove_user_fields(self):
+        target = self.ids.ops_fields
+        target.clear_widgets()
+        crud_first = TextInput(hint_text='First Name', multiline=False)
+        crud_last = TextInput(hint_text='Last Name', multiline=False)
+        crud_user = TextInput(hint_text='User Name', multiline=False)
+        crud_pwd = TextInput(hint_text='Password', multiline=False)
+        # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
+        crud_submit = Button(text='Remove', size_hint_x=None, width=100,
+                             on_release=lambda x: self.remove_user(crud_first.text,
+                                                                   crud_last.text,
+                                                                   crud_user.text,
+                                                                   crud_pwd.text))
+        target.add_widget(crud_first)
+        target.add_widget(crud_last)
+        target.add_widget(crud_user)
+        target.add_widget(crud_pwd)
+        # target.add_widget(crud_des)
+        target.add_widget(crud_submit)
 
     # Read information on DB about users
     def get_users(self):
@@ -124,7 +149,7 @@ class AdminWindow(BoxLayout):
             idx += 1
         return _users
 
-    # Read information on DB about products
+    # Read information in DB about products
     def get_products(self):
         _stocks = OrderedDict()
         _stocks['product_codes'] = {}
@@ -154,7 +179,7 @@ class AdminWindow(BoxLayout):
             idx += 1
         return _stocks
 
-    # Change Screens about admin menu
+    # Change Screens of admin menu
     def change_screen(self, instance):
         if instance.text == 'Manage Products':
             self.ids.scrn_mngr.current = 'scrn_product_content'
