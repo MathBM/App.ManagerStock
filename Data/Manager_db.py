@@ -90,7 +90,7 @@ class ClientDB(Access):
             return False
 
     def update_register(self, table, update, where):
-        """ Input Register on Local DB.
+        """ Input Register in Local DB.
             Args:
                 table(str): Choose table for update data.
                 update(str): Set a data for Database.
@@ -112,7 +112,32 @@ class ClientDB(Access):
             print("Successfully update record.")
             self.commit_on_db()
         except sqlite3.IntegrityError:
-            print("Updating failure.")
+            print("Updating Failure.")
+            return False
+
+    def delete_register(self, table, where):
+        """ Delete Register in Data Base.
+
+            Args:
+                table(str):
+                where(str):
+
+            Return:
+                False, if data delete failure.
+
+            Except:
+                Error about sqlite integrity Error, duplicate value or other SQL Error.
+
+        """
+        try:
+            sql_script = ("""
+            DELETE FROM {}
+            WHERE {}
+        """).format(table, where)
+            self.cursor.execute(sql_script)
+            self.commit_on_db()
+        except sqlite3.IntegrityError:
+            print("Delete Failure.")
             return False
 
 

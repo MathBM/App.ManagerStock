@@ -28,7 +28,7 @@ class AdminWindow(BoxLayout):
         content.add_widget(userstable)
 
         # Display Products
-        product_scrn = self.ids.scrn_product_content
+        product_scrn = self.ids.scrn_product_contents
         products = self.get_products()
         prod_table = DataTable(table=products)
         product_scrn.add_widget(prod_table)
@@ -101,24 +101,26 @@ class AdminWindow(BoxLayout):
     def remove_user_fields(self):
         target = self.ids.ops_fields
         target.clear_widgets()
-        crud_first = TextInput(hint_text='First Name', multiline=False)
-        crud_last = TextInput(hint_text='Last Name', multiline=False)
         crud_user = TextInput(hint_text='User Name', multiline=False)
-        crud_pwd = TextInput(hint_text='Password', multiline=False)
-        # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
         crud_submit = Button(text='Remove', size_hint_x=None, width=100,
-                             on_release=lambda x: self.remove_user(crud_first.text,
-                                                                   crud_last.text,
-                                                                   crud_user.text,
-                                                                   crud_pwd.text))
-        target.add_widget(crud_first)
-        target.add_widget(crud_last)
+                             on_release=lambda x: self.remove_user(crud_user.text))
+
         target.add_widget(crud_user)
-        target.add_widget(crud_pwd)
-        # target.add_widget(crud_des)
         target.add_widget(crud_submit)
 
-    # Read information on DB about users
+    # Removes User in DB. The key is user_name
+    def remove_user(self, user):
+        content = self.ids.scrn_contents
+        content.clear_widgets()
+
+        where = "user_names = '{}'".format(user)
+        self.db.delete_register('USERS', where)
+
+        users = self.get_users()
+        userstable = DataTable(table=users)
+        content.add_widget(userstable)
+
+    # Read information on DB about users.
     def get_users(self):
         _users = OrderedDict()
         _users['first_names'] = {}
@@ -148,6 +150,88 @@ class AdminWindow(BoxLayout):
 
             idx += 1
         return _users
+
+    # Fields for type information about products when add.
+    def add_product_fields(self):
+        target = self.ids.ops_fields_p
+        target.clear_widgets()
+
+        crud_code = TextInput(hint_text='Product Code', multiline=False)
+        crud_name = TextInput(hint_text='Product Name', multiline=False)
+        crud_weight = TextInput(hint_text='Product Weight', multiline=False)
+        crud_qty = TextInput(hint_text='Qty Stocks', multiline=False)
+        crud_submit = Button(text='Add', size_hint_x=None, width=100,
+                             on_release=lambda x: self.add_product(crud_code.text, crud_name.text, crud_weight.text,
+                                                                   crud_qty.text))
+        target.add_widget(crud_code)
+        target.add_widget(crud_name)
+        target.add_widget(crud_weight)
+        target.add_widget(crud_qty)
+        target.add_widget(crud_submit)
+
+    def add_product(self, code, name, weight, qty):
+        content = self.ids.scrn_product_contents
+        content.clear_widgets()
+        self.db.input_register('STOCKS', {'product_code': code, 'product_name': name, 'product_weight': weight,
+                                          'qty_stock': qty})
+
+        products = self.get_products()
+        prod_table = DataTable(table=products)
+        content.add_widget(prod_table)
+
+    # Fields for type information about product when update.
+    def update_product_fields(self):
+        target = self.ids.ops_fields_p
+        target.clear_widgets()
+        crud_code = TextInput(hint_text='Product Code', multiline=False)
+        crud_name = TextInput(hint_text='Product Name', multiline=False)
+        crud_weight = TextInput(hint_text='Product Weight', multiline=False)
+        crud_qty = TextInput(hint_text='Qty Stocks', multiline=False)
+        crud_submit = Button(text='Update', size_hint_x=None, width=100,
+                             on_release=lambda x: self.update_product(crud_code.text, crud_name.text, crud_weight.text,
+                                                                      crud_qty.text))
+        target.add_widget(crud_code)
+        target.add_widget(crud_name)
+        target.add_widget(crud_weight)
+        target.add_widget(crud_qty)
+        target.add_widget(crud_submit)
+
+    # Update product in DB. The key is product code
+    def update_product(self, code, name, weight, qty):
+        content = self.ids.scrn_product_contents
+        content.clear_widgets()
+
+        update = "product_code = '{}', product_name = '{}', product_weight = '{}', qty_stock = '{}'".format(code, name,
+                                                                                                            weight, qty)
+        where = "product_code = '{}'".format(code)
+        self.db.update_register('STOCKS', update, where)
+
+        products = self.get_products()
+        prod_table = DataTable(table=products)
+        content.add_widget(prod_table)
+
+    # Fields for type information about product when remove.
+    def remove_product_fields(self):
+        target = self.ids.ops_fields_p
+        target.clear_widgets()
+        crud_code = TextInput(hint_text='Product Code', multiline=False)
+        crud_submit = Button(text='Remove', size_hint_x=None, width=100, on_release=lambda x: self.remove_product(
+                                                                                                    crud_code.text))
+
+        target.add_widget(crud_code)
+        target.add_widget(crud_submit)
+
+        # Removes product in DB. The key is product.
+    def remove_product(self, code):
+        content = self.ids.scrn_product_contents
+        content.clear_widgets()
+
+        where = "product_code = '{}'".format(code)
+        self.db.delete_register('STOCKS', where)
+
+        products = self.get_products()
+        prod_table = DataTable(table=products)
+        content.add_widget(prod_table)
 
     # Read information in DB about products
     def get_products(self):
