@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 # Class of Kivy-module
 from kivy.app import App
-from kivy.clock import ClockBase
+from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -29,6 +29,7 @@ class Notify(ModalView):
 
 
 class AdminWindow(BoxLayout):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -48,10 +49,6 @@ class AdminWindow(BoxLayout):
         products = self.get_products()
         prod_table = DataTable(table=products)
         product_scrn.add_widget(prod_table)
-
-    def kill_switch(self):
-        self.notify.dismiss()
-        self.notify.clear_widgets()
 
     # Fields for type information when add.
     def add_user_fields(self):
@@ -82,13 +79,17 @@ class AdminWindow(BoxLayout):
         if first == '' or last == '' or user == '' or pwd == '':
             self.notify.add_widget(Label(text='[color=#FF0000][b]All Fields Required[/b][/color]', markup=True))
             self.notify.open()
-            ClockBase.schedule_once(self.kill_switch)
-
-        self.db.input_register('USERS',
-                               {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
+            Clock.schedule_once(self.kill_switch, 1)
+        else:
+            self.db.input_register('USERS',
+                                   {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
+
+    def kill_switch(self, dt):
+        self.notify.dismiss()
+        self.notify.clear_widgets()
 
     # Fields for type information when update.
     def update_user_fields(self):
@@ -199,8 +200,13 @@ class AdminWindow(BoxLayout):
     def add_product(self, code, name, weight, qty):
         content = self.ids.scrn_product_contents
         content.clear_widgets()
-        self.db.input_register('STOCKS', {'product_code': code, 'product_name': name, 'product_weight': weight,
-                                          'qty_stock': qty})
+        if code == '' or name == '' or weight == '' or qty == '':
+            self.notify.add_widget(Label(text='[color=#FF0000][b]All Fields Required[/b][/color]', markup=True))
+            self.notify.open()
+            Clock.schedule_once(self.kill_switch, 1)
+        else:
+            self.db.input_register('STOCKS', {'product_code': code, 'product_name': name, 'product_weight': weight,
+                                              'qty_stock': qty})
 
         products = self.get_products()
         prod_table = DataTable(table=products)
