@@ -1,12 +1,17 @@
 # Class of Python module
+import hashlib
 from collections import OrderedDict
+import matplotlib.pyplot as plt
 # from datetime import datetime
 
 # Class of Kivy-module
 from kivy.app import App
+from kivy.clock import ClockBase
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.uix.modalview import ModalView
+from kivy.uix.label import Label
 # from kivy.uix.spinner import Spinner
 
 # Class of Manager Data Base with sqlite
@@ -16,9 +21,20 @@ from Utils.datatable import DataTable
 database_dir = r"D:\App.ManagerStock\Data\SilverPOS.db"
 
 
+class Notify(ModalView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.size_hint = (.7, .7)
+
+
 class AdminWindow(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        self.notify = Notify()
+
+        # Connection with DB
         self.db = ClientDB(database_dir)
 
         # Display Users
@@ -32,6 +48,10 @@ class AdminWindow(BoxLayout):
         products = self.get_products()
         prod_table = DataTable(table=products)
         product_scrn.add_widget(prod_table)
+
+    def kill_switch(self):
+        self.notify.dismiss()
+        self.notify.clear_widgets()
 
     # Fields for type information when add.
     def add_user_fields(self):
@@ -58,6 +78,12 @@ class AdminWindow(BoxLayout):
     def add_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
         content.clear_widgets()
+        pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
+        if first == '' or last == '' or user == '' or pwd == '':
+            self.notify.add_widget(Label(text='[color=#FF0000][b]All Fields Required[/b][/color]', markup=True))
+            self.notify.open()
+            ClockBase.schedule_once(self.kill_switch)
+
         self.db.input_register('USERS',
                                {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
         users = self.get_users()
@@ -89,6 +115,7 @@ class AdminWindow(BoxLayout):
     def update_user(self, first, last, user, pwd):
         content = self.ids.scrn_contents
         content.clear_widgets()
+        pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
         update = "first_names = '{}', last_names = '{}', user_names = '{}', passwords = '{}'".format(first, last, user,
                                                                                                      pwd)
         where = "user_names = '{}'".format(user)
@@ -216,12 +243,13 @@ class AdminWindow(BoxLayout):
         target.clear_widgets()
         crud_code = TextInput(hint_text='Product Code', multiline=False)
         crud_submit = Button(text='Remove', size_hint_x=None, width=100, on_release=lambda x: self.remove_product(
-                                                                                                    crud_code.text))
+            crud_code.text))
 
         target.add_widget(crud_code)
         target.add_widget(crud_submit)
 
         # Removes product in DB. The key is product.
+
     def remove_product(self, code):
         content = self.ids.scrn_product_contents
         content.clear_widgets()
