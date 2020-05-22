@@ -7,12 +7,15 @@ class Access:
 
             Args:
                 db_name(str): Path or name of DataBase for connection.
+
+            Except:
+                Error about sqlite.
         """
         self.db = db_name
         try:
             self.conn = sqlite3.connect(self.db)
             self.cursor = self.conn.cursor()
-            print("Data Base:\t", self.db)
+            print('Connection Successful.\n''Data Base:\t', self.db)
             self.cursor.execute('SELECT SQLITE_VERSION()')
             self.data = self.cursor.fetchone()
             print("SQlite version:\t %s" % self.data)
@@ -46,11 +49,12 @@ class ClientDB(Access):
 
             Args:
                 tb_name(str): Table name for create.
+
             Return:
                 False, if table for created is exist.
+
             Except:
-                sqlite Error:
-                Warning: The table exist,
+                Error about sqlite integrity Error.
         """
         schema_name = 'sql/%s_schema.sql' % tb_name
         print("Creating table %s ..." % tb_name)
@@ -65,6 +69,7 @@ class ClientDB(Access):
 
     def input_register(self, table, d_values):
         """ Input Register on Local DB.
+
             Args:
                 table(str): Choose table for input data
                 d_values(dict): Keys, cols about Db and Dict Values(D.V.) is a values for data input.
@@ -73,7 +78,7 @@ class ClientDB(Access):
                 False, if data input failure.
 
             Except:
-                Error about sqlite integrity Error, duplicate value or other SQL Error.
+                Error about sqlite integrity Error.
         """
         try:
             into = tuple(d_values.keys())
@@ -100,8 +105,7 @@ class ClientDB(Access):
                 False, if data update failure.
 
             Except:
-                Error about sqlite integrity Error, duplicate value or other SQL Error.
-
+                Error about sqlite integrity Error.
         """
         try:
             slq_script = ("""
@@ -109,8 +113,8 @@ class ClientDB(Access):
             WHERE {};
             """).format(table, update, where)
             self.cursor.execute(slq_script)
-            print("Successfully update record.")
             self.commit_on_db()
+            print("Successfully update record.")
         except sqlite3.IntegrityError:
             print("Updating Failure.")
             return False
@@ -119,25 +123,52 @@ class ClientDB(Access):
         """ Delete Register in Data Base.
 
             Args:
-                table(str):
-                where(str):
+                table(str): Choose table for update data.
+                where(str): Choose column with condition.
 
             Return:
                 False, if data delete failure.
 
             Except:
-                Error about sqlite integrity Error, duplicate value or other SQL Error.
+                Error about sqlite integrity Error.
 
         """
         try:
             sql_script = ("""
-            DELETE FROM {}
+            DELETE FROM {} 
             WHERE {}
-        """).format(table, where)
+            """).format(table, where)
             self.cursor.execute(sql_script)
             self.commit_on_db()
         except sqlite3.IntegrityError:
             print("Delete Failure.")
+            return False
+
+    def search_register(self, select_data, table, where):
+        """ Search register in DB.
+
+            Args:
+                select_data(str): Select da data in DB, such column.
+                table(str): Choose table for update data.
+                where(str): Choose column with condition
+
+            Return:
+                result.fetchone is da tuple with one column, about choose data.
+                False, if data search failure.
+
+            Except:
+                Error about sqlite integrity Error.
+        """
+        try:
+            sql_script = ("""
+            SELECT {} FROM {}
+            WHERE {}
+            """).format(select_data, table, where)
+            result = self.cursor.execute(sql_script)
+            self.commit_on_db()
+            return result.fetchone()
+        except sqlite3.IntegrityError:
+            print("Search Failure.")
             return False
 
 

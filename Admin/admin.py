@@ -1,7 +1,7 @@
 # Class of Python module
 import hashlib
 from collections import OrderedDict
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # from datetime import datetime
 
 # Class of Kivy-module
@@ -117,10 +117,34 @@ class AdminWindow(BoxLayout):
         content = self.ids.scrn_contents
         content.clear_widgets()
         pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
-        update = "first_names = '{}', last_names = '{}', user_names = '{}', passwords = '{}'".format(first, last, user,
-                                                                                                     pwd)
-        where = "user_names = '{}'".format(user)
-        self.db.update_register('USERS', update, where)
+
+        if user == '':
+            self.notify.add_widget(Label(text='[color=#FF0000][b]User Field Required[/b][/color]', markup=True))
+            self.notify.open()
+            Clock.schedule_once(self.kill_switch, 1)
+        else:
+            user = self.db.search_register('user_names', 'USERS', where="user_names='%s'" % user)
+            user = user[0]
+            if user is None:
+                self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid Username[/b][/color]', markup=True))
+                self.notify.open()
+                Clock.schedule_once(self.kill_switch, 1)
+            else:
+                if first == '':
+                    first = self.db.search_register('first_names', 'USERS', where="user_names='%s'" % user)
+                    first = first[0]
+                if last == '':
+                    last = self.db.search_register('last_names', 'USERS', where="user_names='%s'" % user)
+                    last = last[0]
+                if pwd == '':
+                    pwd = self.db.search_register('passwords', 'USERS', where="user_names='%s'" % user)
+                    pwd = pwd[0]
+
+                update = "first_names = '{}', last_names = '{}', user_names = '{}', passwords = '{}'".format(first,
+                                                                                                             last, user,
+                                                                                                             pwd)
+                self.db.update_register('USERS', update, where="user_names = '{}'".format(user))
+
         users = self.get_users()
         userstable = DataTable(table=users)
         content.add_widget(userstable)
