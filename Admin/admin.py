@@ -3,7 +3,7 @@ import hashlib
 from collections import OrderedDict
 # import matplotlib.pyplot as plt
 # from datetime import datetime
-
+#########################################
 # Class of Kivy-module
 from kivy.app import App
 from kivy.clock import Clock
@@ -12,13 +12,16 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.modalview import ModalView
 from kivy.uix.label import Label
+from kivy.lang import Builder
 # from kivy.uix.spinner import Spinner
-
+##########################################
 # Class of Manager Data Base with sqlite
 from Data.Manager_db import ClientDB
 from Utils.datatable import DataTable
+##########################################
 
 database_dir = r"D:\App.ManagerStock\Data\SilverPOS.db"
+Builder.load_file(r"D:\App.ManagerStock\admin\admin.kv")
 
 
 class Notify(ModalView):
@@ -73,8 +76,6 @@ class AdminWindow(BoxLayout):
 
     # add user in DB
     def add_user(self, first, last, user, pwd):
-        content = self.ids.scrn_contents
-        content.clear_widgets()
         pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
         if first == '' or last == '' or user == '' or pwd == '':
             self.notify.add_widget(Label(text='[color=#FF0000][b]All Fields Required[/b][/color]', markup=True))
@@ -83,9 +84,11 @@ class AdminWindow(BoxLayout):
         else:
             self.db.input_register('USERS',
                                    {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
-        users = self.get_users()
-        userstable = DataTable(table=users)
-        content.add_widget(userstable)
+            content = self.ids.scrn_contents
+            content.clear_widgets()
+            users = self.get_users()
+            userstable = DataTable(table=users)
+            content.add_widget(userstable)
 
     def kill_switch(self, dt):
         self.notify.dismiss()
@@ -114,8 +117,6 @@ class AdminWindow(BoxLayout):
 
     # Update user in DB. The key is user_name
     def update_user(self, first, last, user, pwd):
-        content = self.ids.scrn_contents
-        content.clear_widgets()
         pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
 
         if user == '':
@@ -140,14 +141,17 @@ class AdminWindow(BoxLayout):
                     pwd = self.db.search_register('passwords', 'USERS', where="user_names='%s'" % user)
                     pwd = pwd[0]
 
-                update = "first_names = '{}', last_names = '{}', user_names = '{}', passwords = '{}'".format(first,
-                                                                                                             last, user,
-                                                                                                             pwd)
+                update = "first_names = '{}', last_names = '{}', user_names =  '{}', passwords = '{}'".format(first,
+                                                                                                              last,
+                                                                                                              user,
+                                                                                                              pwd)
+                content = self.ids.scrn_contents
+                content.clear_widgets()
                 self.db.update_register('USERS', update, where="user_names = '{}'".format(user))
 
-        users = self.get_users()
-        userstable = DataTable(table=users)
-        content.add_widget(userstable)
+                users = self.get_users()
+                userstable = DataTable(table=users)
+                content.add_widget(userstable)
 
     # Fields for type information when remove.
     def remove_user_fields(self):
@@ -162,15 +166,24 @@ class AdminWindow(BoxLayout):
 
     # Removes User in DB. The key is user_name
     def remove_user(self, user):
-        content = self.ids.scrn_contents
-        content.clear_widgets()
-
-        where = "user_names = '{}'".format(user)
-        self.db.delete_register('USERS', where)
-
-        users = self.get_users()
-        userstable = DataTable(table=users)
-        content.add_widget(userstable)
+        if user == '':
+            self.notify.add_widget(Label(text='[color=#FF0000][b]User Field Required[/b][/color]', markup=True))
+            self.notify.open()
+            Clock.schedule_once(self.kill_switch, 1)
+        else:
+            user = self.db.search_register('user_names', 'USERS', where="user_names='%s'".format(user))
+            user = user[0]
+            if user is None:
+                self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid UserName[/b][/color]', markup=True))
+                self.notify.open()
+                Clock.schedule_once(self.kill_switch, 1)
+            else:
+                content = self.ids.scrn_contents
+                content.clear_widgets()
+                self.db.delete_register('USERS', where="user_names = '{}'".format(user))
+                users = self.get_users()
+                userstable = DataTable(table=users)
+                content.add_widget(userstable)
 
     # Read information on DB about users.
     def get_users(self):
@@ -222,8 +235,6 @@ class AdminWindow(BoxLayout):
         target.add_widget(crud_submit)
 
     def add_product(self, code, name, weight, qty):
-        content = self.ids.scrn_product_contents
-        content.clear_widgets()
         if code == '' or name == '' or weight == '' or qty == '':
             self.notify.add_widget(Label(text='[color=#FF0000][b]All Fields Required[/b][/color]', markup=True))
             self.notify.open()
@@ -231,10 +242,12 @@ class AdminWindow(BoxLayout):
         else:
             self.db.input_register('STOCKS', {'product_code': code, 'product_name': name, 'product_weight': weight,
                                               'qty_stock': qty})
+            content = self.ids.scrn_product_contents
+            content.clear_widgets()
 
-        products = self.get_products()
-        prod_table = DataTable(table=products)
-        content.add_widget(prod_table)
+            products = self.get_products()
+            prod_table = DataTable(table=products)
+            content.add_widget(prod_table)
 
     # Fields for type information about product when update.
     def update_product_fields(self):
@@ -255,17 +268,38 @@ class AdminWindow(BoxLayout):
 
     # Update product in DB. The key is product code
     def update_product(self, code, name, weight, qty):
-        content = self.ids.scrn_product_contents
-        content.clear_widgets()
+        if code == '':
+            self.notify.add_widget(Label(text='[color=#FF0000][b]Product Code Field Required[/b][/color]', markup=True))
+            self.notify.open()
+            Clock.schedule_once(self.kill_switch, 1)
+        else:
+            code = self.db.search_register('product_code', 'STOCKS', where="product_code='%s'" % code)
+            code = code[0]
+            if code is None:
+                self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid Product Code[/b][/color]', markup=True))
+                self.notify.open()
+                Clock.schedule_once(self.kill_switch, 1)
+            else:
+                if name == '':
+                    name = self.db.search_register('product_name', 'STOCKS', where="product_code='%s'" % code)
+                    name = name[0]
+                if weight == '':
+                    weight = self.db.search_register('product_weight', 'STOCKS', where="product_code='%s'" % code)
+                    weight = weight[0]
+                if qty == '':
+                    qty = self.db.search_register('qty_stock', 'STOCKS', where="product_code='%s'" % code)
+                    qty = qty[0]
+                content = self.ids.scrn_product_contents
+                content.clear_widgets()
 
-        update = "product_code = '{}', product_name = '{}', product_weight = '{}', qty_stock = '{}'".format(code, name,
-                                                                                                            weight, qty)
-        where = "product_code = '{}'".format(code)
-        self.db.update_register('STOCKS', update, where)
+                update = "product_code = '{}', product_name = '{}', product_weight = '{}', qty_stock = '{}'".format(
+                    code, name,
+                    weight, qty)
+                self.db.update_register('STOCKS', update, where="product_code = '{}'".format(code))
 
-        products = self.get_products()
-        prod_table = DataTable(table=products)
-        content.add_widget(prod_table)
+                products = self.get_products()
+                prod_table = DataTable(table=products)
+                content.add_widget(prod_table)
 
     # Fields for type information about product when remove.
     def remove_product_fields(self):
@@ -278,18 +312,26 @@ class AdminWindow(BoxLayout):
         target.add_widget(crud_code)
         target.add_widget(crud_submit)
 
-        # Removes product in DB. The key is product.
-
+    # Removes product in DB. The key is product.
     def remove_product(self, code):
-        content = self.ids.scrn_product_contents
-        content.clear_widgets()
-
-        where = "product_code = '{}'".format(code)
-        self.db.delete_register('STOCKS', where)
-
-        products = self.get_products()
-        prod_table = DataTable(table=products)
-        content.add_widget(prod_table)
+        if code == '':
+            self.notify.add_widget(Label(text='[color=#FF0000][b]Product Code Field Required[/b][/color]', markup=True))
+            self.notify.open()
+            Clock.schedule_once(self.kill_switch, 1)
+        else:
+            code = self.db.search_register('product_code', 'STOCKS', where="product_code='%s'".format(code))
+            code = code[0]
+            if code is None:
+                self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid UserName[/b][/color]', markup=True))
+                self.notify.open()
+                Clock.schedule_once(self.kill_switch, 1)
+            else:
+                content = self.ids.scrn_product_contents
+                content.clear_widgets()
+                self.db.delete_register('STOCKS', where="product_code = '{}'".format(code))
+                products = self.get_products()
+                prod_table = DataTable(table=products)
+                content.add_widget(prod_table)
 
     # Read information in DB about products
     def get_products(self):

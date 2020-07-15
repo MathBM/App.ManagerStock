@@ -33,7 +33,7 @@ Builder.load_string('''
 
 
 class DataTable(BoxLayout):
-    def __init__(self, table='' **kwargs):
+    def __init__(self, table='', **kwargs):
         super().__init__(**kwargs)
         self.db = ClientDB(database)
         products = table

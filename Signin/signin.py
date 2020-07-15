@@ -1,5 +1,8 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.lang import Builder
+
+Builder.load_file(r"D:\App.ManagerStock\signin\signin.kv")
 
 
 class SigninWindow(BoxLayout):
@@ -19,6 +22,7 @@ class SigninWindow(BoxLayout):
         else:
             if uname == 'admin' and passw == 'admin':
                 info.text = '[color=#00FF00]Logged In Successfully!!![/color]'
+                self.parent.parent.current = 'scrn_admin'
             else:
                 info.text = '[color=#FF0000]Invalid Password or Username.[/color]'
 
