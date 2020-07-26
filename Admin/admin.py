@@ -21,7 +21,7 @@ from Utils.datatable import DataTable
 ##########################################
 
 database_dir = r"D:\App.ManagerStock\Data\SilverPOS.db"
-Builder.load_file(r"D:\App.ManagerStock\admin\admin.kv")
+Builder.load_file(r'D:\App.ManagerStock\admin\admin.kv')
 
 
 class Notify(ModalView):
