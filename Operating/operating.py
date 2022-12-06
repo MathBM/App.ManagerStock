@@ -4,7 +4,7 @@ from kivy.uix.label import Label
 from kivy.lang import Builder
 import re
 
-Builder.load_file(r"D:\App.ManagerStock\Operating\operating.kv")
+Builder.load_file(r"Operating/operating.kv")
 
 
 class OperatingWindow(BoxLayout):

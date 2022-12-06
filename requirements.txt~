@@ -1,0 +1,10 @@
+certifi==2022.9.24
+charset-normalizer==2.1.1
+docutils==0.19
+idna==3.4
+Kivy==2.1.0
+Kivy-Garden==0.1.5
+mysql-connector-python==8.0.30
+protobuf==3.20.1
+Pygments==2.13.0
+urllib3==1.26.13

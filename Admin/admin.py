@@ -20,14 +20,13 @@ from Data.Manager_db import ClientDB
 from Utils.datatable import DataTable
 ##########################################
 
-database_dir = r"D:\App.ManagerStock\Data\SilverPOS.db"
-Builder.load_file(r'D:\App.ManagerStock\admin\admin.kv')
+#database_dir = r"D:\App.ManagerStock\Data\SilverPOS.db"
+Builder.load_file(r"Admin/admin.kv")
 
 
 class Notify(ModalView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
         self.size_hint = (.7, .7)
 
 
