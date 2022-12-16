@@ -1,8 +1,10 @@
 # Class of Python module
 import hashlib
+import sys
 from collections import OrderedDict
 # import matplotlib.pyplot as plt
 # from datetime import datetime
+sys.path.append('../')
 #########################################
 # Class of Kivy-module
 from kivy.app import App
@@ -14,14 +16,14 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.label import Label
 from kivy.lang import Builder
 # from kivy.uix.spinner import Spinner
+
 ##########################################
-# Class of Manager Data Base with sqlite
-from Data.Manager_db import ClientDB
+# Class of Manager Data Base
+from Data.Manager_db import DBConnection
 from Utils.datatable import DataTable
 ##########################################
 
-#database_dir = r"D:\App.ManagerStock\Data\SilverPOS.db"
-Builder.load_file(r"Admin/admin.kv")
+#Builder.load_file(r"Admin/admin.kv")
 
 
 class Notify(ModalView):
@@ -38,7 +40,9 @@ class AdminWindow(BoxLayout):
         self.notify = Notify()
 
         # Connection with DB
-        self.db = ClientDB(database_dir)
+        self.db = DBConnection()
+        self.db.set_credentials("localhost","3306","root", "root", "Silver_POS")
+        self.db.create_conn()
 
         # Display Users
         content = self.ids.scrn_contents
@@ -81,7 +85,7 @@ class AdminWindow(BoxLayout):
             self.notify.open()
             Clock.schedule_once(self.kill_switch, 1)
         else:
-            self.db.input_register('USERS',
+            self.db.insert_reg('USERS',
                                    {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
             content = self.ids.scrn_contents
             content.clear_widgets()
@@ -157,9 +161,7 @@ class AdminWindow(BoxLayout):
         target = self.ids.ops_fields
         target.clear_widgets()
         crud_user = TextInput(hint_text='User Name', multiline=False)
-        crud_submit = Button(text='Remove', size_hint_x=None, width=100,
-                             on_release=lambda x: self.remove_user(crud_user.text))
-
+        crud_submit = Button(text='Remove', size_hint_x=None, width=100, on_release=lambda x: self.remove_user(crud_user.text))
         target.add_widget(crud_user)
         target.add_widget(crud_submit)
 
@@ -170,7 +172,7 @@ class AdminWindow(BoxLayout):
             self.notify.open()
             Clock.schedule_once(self.kill_switch, 1)
         else:
-            user = self.db.search_register('user_names', 'USERS', where="user_names='%s'".format(user))
+            user = self.db.search_register('user_names', 'USERS', where=f"""user_names='{user}'""")
             user = user[0]
             if user is None:
                 self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid UserName[/b][/color]', markup=True))
@@ -195,8 +197,8 @@ class AdminWindow(BoxLayout):
         last_names = []
         user_names = []
         passwords = []
-        self.db.cursor.execute("SELECT first_names, Last_names, user_names, passwords FROM USERS")
-        for line in self.db.cursor.fetchall():
+        self.db.execute("SELECT first_names, Last_names, user_names, passwords FROM USERS")
+        for line in self.db._cursor.fetchall():
             first_names.append(line[0])
             last_names.append(line[1])
             user_names.append(line[2])
@@ -239,7 +241,7 @@ class AdminWindow(BoxLayout):
             self.notify.open()
             Clock.schedule_once(self.kill_switch, 1)
         else:
-            self.db.input_register('STOCKS', {'product_code': code, 'product_name': name, 'product_weight': weight,
+            self.db.insert_reg('STOCKS', {'product_code': code, 'product_name': name, 'product_weight': weight,
                                               'qty_stock': qty})
             content = self.ids.scrn_product_contents
             content.clear_widgets()
@@ -318,7 +320,7 @@ class AdminWindow(BoxLayout):
             self.notify.open()
             Clock.schedule_once(self.kill_switch, 1)
         else:
-            code = self.db.search_register('product_code', 'STOCKS', where="product_code='%s'".format(code))
+            code = self.db.search_register('product_code', 'STOCKS', where=f"""product_code='{code}'""")
             code = code[0]
             if code is None:
                 self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid UserName[/b][/color]', markup=True))
@@ -343,8 +345,8 @@ class AdminWindow(BoxLayout):
         product_names = []
         product_weighs = []
         qty_stocks = []
-        self.db.cursor.execute("SELECT product_code, product_name, product_weight, qty_stock FROM STOCKS")
-        for line in self.db.cursor.fetchall():
+        self.db.execute("SELECT product_code, product_name, product_weight, qty_stock FROM STOCKS")
+        for line in self.db._cursor.fetchall():
             product_codes.append(line[0])
             name = line[1]
             if len(name) > 10:

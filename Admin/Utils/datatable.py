@@ -2,9 +2,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from collections import OrderedDict
-from Data.Manager_db import ClientDB
-database = r"D:\App.ManagerStock\Data\SilverPOS.db"
-
+from Data.Manager_db import DBConnection
 
 Builder.load_string('''
 <DataTable>:
@@ -35,9 +33,13 @@ Builder.load_string('''
 class DataTable(BoxLayout):
     def __init__(self, table='', **kwargs):
         super().__init__(**kwargs)
-        self.db = ClientDB(database)
+        
+        # Connection with DB
+        self.db = DBConnection()
+        self.db.set_credentials("localhost","3306","root", "root", "Silver_POS")
+        self.db.create_conn()
+
         products = table
-        # products = self.get_products()
         col_titles = [k for k in products.keys()]
         rows_len = len(products[col_titles[0]])
         self.columns = len(col_titles)

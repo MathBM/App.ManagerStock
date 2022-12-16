@@ -63,10 +63,9 @@ class DBConnection:
                 self._conn = mysql.connector.connect(host=self._host, port=self._port,user=self._username, passwd=self._password, database=self._db_name)
                 self._cursor = self._conn.cursor()
                 print("Connection Successful. MYSQL Ver: {}\n".format(self._conn.get_server_info()))
-                print(f"At Schema {self._db_name}\n")
+                print(f"At Database {self._db_name}\n")
         except Error as err:
-            print("Data Base Error Opening.\n")
-            print(f"Error: '{err}'")
+            print(f"Data Base Error Opening.\nError: '{err}'")
 
     def execute(self, query):
         """ Method to execute a query on DB
@@ -92,10 +91,9 @@ class DBConnection:
         """
         try:
             self._conn.commit()
-            print("Salvo com Sucesso as alterações realizadas.\n")
+            print("Successfully Saved Changes\n")
         except Error as err:
-            print("Commit Error.\n")
-            print(f"Error: '{err}'")
+            print(f"Commit Error.\nError: '{err}'")
 
     def conclose(self):
         """ Method to execute clone connection with DB
@@ -113,8 +111,7 @@ class DBConnection:
                 self._cursor = None
                 print("Connection close Successfully.\n")
         except Error as err:
-            print("Connection close error.\n.")
-            print(f"Error: '{err}'")
+            print(f"Connection close error.\nError: '{err}'")
 
     def insert_reg(self, table, d_values):
         """ Method to insert reg on DB.
@@ -132,14 +129,11 @@ class DBConnection:
         try:
             into = '(' + ', '.join(tuple(d_values.keys())) + ')'
             values = tuple(d_values.values())
-            query = f"""INSERT INTO {table} {into} VALUES {values};"""
-            print(query)
-            self._cursor.execute(query)
+            self._cursor.execute(f"""INSERT INTO {table} {into} VALUES {values};""")
             print("Successfully insertion record.")
             self.commit()
         except Error as err:
-            print("Record insertion failure.")
-            print(f"Error: '{err}'")
+            print(f"Record insertion failure.\nError: '{err}'")
             return False
 
     def update_register(self, table, update, where):
@@ -157,15 +151,11 @@ class DBConnection:
                 Error about sqlite integrity Error.
         """
         try:
-            slq_script = ("""
-            UPDATE {} SET {}
-            WHERE {};
-            """).format(table, update, where)
-            self.cursor.execute(slq_script)
+            self._cursor.execute(f"""UPDATE {table} SET {update} WHERE {where}; """)
             print("Successfully update record.")
             self.commit()
-        except mysql.IntegrityError:
-            print("Updating Failure.")
+        except Error as err:
+            print(f"Updating Failure.\n Error:{err}")
             return False
 
     def delete_register(self, table, where):
@@ -183,14 +173,10 @@ class DBConnection:
 
         """
         try:
-            sql_script = ("""
-            DELETE FROM {} 
-            WHERE {}
-            """).format(table, where)
-            self.cursor.execute(sql_script)
-            self.commit_on_db()
-        except mysql.IntegrityError:
-            print("Delete Failure.")
+            self._cursor.execute(f"""DELETE FROM {table} WHERE {where};""")
+            self.commit()
+        except Error as err:
+            print(f"Delete Failure.\n Error:{err}")
             return False
 
     def search_register(self, select_data, table, where):
@@ -209,15 +195,11 @@ class DBConnection:
                 Error about sqlite integrity Error.
         """
         try:
-            sql_script = ("""
-            SELECT {} FROM {}
-            WHERE {}
-            """).format(select_data, table, where)
-            result = self.cursor.execute(sql_script)
-            self.commit_on_db()
-            return result.fetchone()
-        except mysql.IntegrityError:
-            print("Search Failure.")
+            self._cursor.execute(f"""SELECT {select_data} FROM {table} WHERE {where};""")
+            result = self._cursor.fetchone()
+            return result
+        except Error as err:
+            print(f"Search Failure.\nError: {err}")
             return False
 
 
@@ -225,9 +207,16 @@ if __name__ == '__main__':
     db = DBConnection()
     db.set_credentials("localhost","3306","root", "root", "Silver_POS")
     db.create_conn()
-    #db.insert_reg("accounts",{"login":"Matheus", "password":"12345678","token":"343hda34234qasd","role":"Operator","ip":"0.0.0.0","active":"1"})
-    db.insert_reg("accounts",{'login':"Jorge", 'password':"12345678",'token':"343hda34234qasd",'role':"Operator",'ip':"0.0.0.0",'active':"1"})
-    # example: db.update_register('USERS', "first_names = 'Matheus', last_names = 'Vigânigo', user_names = 'viga99',
-    # passwords = '45456521'", 7)
+    """
+    example: db.update_register('USERS', "first_names = 'Matheus', last_names = 'Vigânigo', user_names = 'viga99',
+    passwords = '45456521'", 7)
+    db.insert_reg("STOCKS", {'product_code':"41564654gg", 'product_name':"Produto1", 'product_weight':'45', 'qty_stock':'45'})
+    db.insert_reg("USERS", {'first_names':'Matheus', 'last_names':'Vigânigo', 'user_names':'viga99', 'passwords':'14654r56ggggf'})
+    db.update_register('USERS', "first_names = 'Matheus', last_names = 'Vigânigo', user_names = 'viga99', passwords = '45456521'", 7)
+    """
+    result = db.search_register("user_names", "USERS", """user_names='viga99'""")
+    print(result)
+    db.conclose()
+
 else:
     Exception("Execution Error")
