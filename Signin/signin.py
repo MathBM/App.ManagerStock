@@ -2,8 +2,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 
-Builder.load_file(r"signin.kv")
-
+Builder.load_file('signin.kv')
 
 class SigninWindow(BoxLayout):
     def __init__(self, **kwargs):

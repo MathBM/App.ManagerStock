@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 import time
+
 class DBConnection:
     def __init__(self):
         """ Create a instance of DB Connection.
@@ -129,10 +130,9 @@ class DBConnection:
                 Error about Mysql integrity Error.
         """
         try:
-            into = tuple(d_values.keys())
-            values = list(d_values.values())
-            #query = f"INSERT INTO {table}" + "(" +", ".join(into) + ")" + "VALUES" + "(" + "'" + "','".join(values) + "'" + ");"
-            query = f"INSERT INTO {table} (" + ", ".join(into) + ") VALUES ('" + "','".join(values) + "')"
+            into = '(' + ', '.join(tuple(d_values.keys())) + ')'
+            values = tuple(d_values.values())
+            query = f"""INSERT INTO {table} {into} VALUES {values};"""
             print(query)
             self._cursor.execute(query)
             print("Successfully insertion record.")
@@ -225,7 +225,8 @@ if __name__ == '__main__':
     db = DBConnection()
     db.set_credentials("localhost","3306","root", "root", "Silver_POS")
     db.create_conn()
-    db.insert_reg("accounts",{"login":"Matheus", "password":"12345678","token":"343hda34234qasd","role":"Operator","ip":"0.0.0.0","active":"1"})
+    #db.insert_reg("accounts",{"login":"Matheus", "password":"12345678","token":"343hda34234qasd","role":"Operator","ip":"0.0.0.0","active":"1"})
+    db.insert_reg("accounts",{'login':"Jorge", 'password':"12345678",'token':"343hda34234qasd",'role':"Operator",'ip':"0.0.0.0",'active':"1"})
     # example: db.update_register('USERS', "first_names = 'Matheus', last_names = 'Vigânigo', user_names = 'viga99',
     # passwords = '45456521'", 7)
 else:
