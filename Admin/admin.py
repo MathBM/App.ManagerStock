@@ -75,7 +75,7 @@ class AdminWindow(BoxLayout):
                              on_release=lambda x: self.add_user(crud_first.text,
                                                                 crud_last.text,
                                                                 crud_user.text,
-                                                                crud_pwd.text. crud_des))
+                                                                crud_pwd.text,crud_des.text))
         target.add_widget(crud_first)
         target.add_widget(crud_last)
         target.add_widget(crud_user)
@@ -115,7 +115,9 @@ class AdminWindow(BoxLayout):
                              on_release=lambda x: self.update_user(crud_first.text,
                                                                    crud_last.text,
                                                                    crud_user.text,
-                                                                   crud_pwd.text))
+                                                                   crud_pwd.text,
+                                                                   crud_des.text))
+       
         target.add_widget(crud_first)
         target.add_widget(crud_last)
         target.add_widget(crud_user)
@@ -124,7 +126,7 @@ class AdminWindow(BoxLayout):
         target.add_widget(crud_submit)
 
     # Update user in DB. The key is user_name
-    def update_user(self, first, last, user, pwd, role):
+    def update_user(self, first, last, user, pwd, des):
         pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
 
         if user == '':
@@ -149,10 +151,10 @@ class AdminWindow(BoxLayout):
                     pwd = self.db.search_register('passwords', 'USERS', where="user_names='%s'" % user)
                     pwd = pwd[0]
 
-                update = "first_names = '{}', last_names = '{}', user_names =  '{}', passwords = '{}'".format(first,
+                update = "first_names = '{}', last_names = '{}', user_names =  '{}', passwords = '{}', role='{}'".format(first,
                                                                                                               last,
                                                                                                               user,
-                                                                                                              pwd)
+                                                                                                              pwd, des)
                 content = self.ids.scrn_contents
                 content.clear_widgets()
                 self.db.update_register('USERS', update, where="user_names = '{}'".format(user))
@@ -198,13 +200,14 @@ class AdminWindow(BoxLayout):
         _users['last_names'] = {}
         _users['user_names'] = {}
         _users['passwords'] = {}
+        _users['designation'] = {}
         first_names = []
         last_names = []
         user_names = []
         passwords = []
+        designation = []
         self.db.execute("SELECT * FROM USERS")
         for line in self.db._cursor.fetchall():
-            print(line)
             first_names.append(line[1])
             last_names.append(line[2])
             user_names.append(line[3])
@@ -212,6 +215,7 @@ class AdminWindow(BoxLayout):
             if len(pwd) > 10:
                 pwd = pwd[:10] + '...'
             passwords.append(pwd)
+            designation.append(line[5])
         users_length = len(first_names)
         idx = 0
         while idx < users_length:
@@ -219,7 +223,7 @@ class AdminWindow(BoxLayout):
             _users['last_names'][idx] = last_names[idx]
             _users['user_names'][idx] = user_names[idx]
             _users['passwords'][idx] = passwords[idx]
-
+            _users['designation'][idx] = designation[idx]
             idx += 1
         return _users
 
@@ -227,8 +231,7 @@ class AdminWindow(BoxLayout):
     def add_product_fields(self):
         target = self.ids.ops_fields_p
         target.clear_widgets()
-
-        crud_code = TextInput (hint_text = 'Product Code', multiline=False, text = self.client_p.requisitarLeitura())
+        crud_code = TextInput (hint_text = 'Product Code', multiline=False, text=self.client_p.requisitarLeitura())
         crud_name = TextInput(hint_text='Product Name', multiline=False)
         crud_weight = TextInput(hint_text='Product Weight', multiline=False)
         crud_qty = TextInput(hint_text='Qty Stocks', multiline=False)
@@ -370,8 +373,6 @@ on_release=lambda x: self.update_product(crud_code.text, crud_name.text, crud_we
             _stocks['qty_stocks'][idx] = qty_stocks[idx]
             idx += 1
         return _stocks
-
-    
 
     # Change Screens of admin menu
     def change_screen(self, screen_name):
