@@ -1,19 +1,22 @@
+import sys
+sys.path.append('./')
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.lang import Builder
-import re
 
-#Builder.load_file(r"Operating/operating.kv")
+from Data.Manager_db import DBConnection
 
+Builder.load_file("Operating/operating.kv")
 
 class OperatingWindow(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        """client = MongoClient()
-        self.db = client.silverpos
-        self.stocks = self.db.stocks"""
+        self.db = DBConnection()
+        self.db.set_credentials("localhost","3306","root", "root", "Silver_POS")
+        self.db.create_conn()
 
+        self.stocks = self.db
         self.cart = []
         self.qty = []
         self.total = 0.00
@@ -22,7 +25,7 @@ class OperatingWindow(BoxLayout):
         pcode = self.ids.code_inp.text
         products_container = self.ids.products
 
-        target_code = self.stocks.find_one({'product_code': pcode})
+        target_code = self.stocks.search_register('product_code', 'STOCKS', f'{pcode}')
         if target_code is None:
             pass
         else:

@@ -33,12 +33,7 @@ Builder.load_string('''
 class DataTable(BoxLayout):
     def __init__(self, table='', **kwargs):
         super().__init__(**kwargs)
-        
-        # Connection with DB
-        self.db = DBConnection()
-        self.db.set_credentials("localhost","3306","root", "root", "Silver_POS")
-        self.db.create_conn()
-
+    
         products = table
         col_titles = [k for k in products.keys()]
         rows_len = len(products[col_titles[0]])

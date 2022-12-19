@@ -68,15 +68,35 @@ class DBConnection:
             print(f"Data Base Error Opening.\nError: '{err}'")
 
     def execute(self, query):
-        """ Method to execute a query on DB
+        """ Method to execute a query on DB and returns one Row.
             Args:
                 query (str): Query to esexute on DB.
-
+            Returns:
+                result (tuple): Row about DB.
             Execept: 
                 MYSql Error.
         """
         try:
             self._cursor.execute(query)
+            result = self._cursor.fetchone()
+            return result
+        except Error as err:
+            print("Error Query Execute\n.")
+            print(f"Error: '{err}'")
+    
+    def execute_fetcall(self, query):
+        """ Method to execute a query on DB and Returns multiple Rows.
+            Args:
+                query (str): Query to esexute on DB.
+            Returns:
+                result (tuple): Row about DB.
+            Execept: 
+                MYSql Error.
+        """
+        try:
+            self._cursor.execute(query)
+            result = self._cursor.fetchall()
+            return result
         except Error as err:
             print("Error Query Execute\n.")
             print(f"Error: '{err}'")
@@ -200,7 +220,7 @@ class DBConnection:
             return result
         except Error as err:
             print(f"Search Failure.\nError: {err}")
-            return False
+            return None
 
 
 if __name__ == '__main__':

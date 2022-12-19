@@ -4,7 +4,7 @@ import sys
 from collections import OrderedDict
 # import matplotlib.pyplot as plt
 # from datetime import datetime
-sys.path.append('../')
+sys.path.append('./')
 #########################################
 # Class of Kivy-module
 from kivy.app import App
@@ -15,7 +15,7 @@ from kivy.uix.button import Button
 from kivy.uix.modalview import ModalView
 from kivy.uix.label import Label
 from kivy.lang import Builder
-# from kivy.uix.spinner import Spinner
+from kivy.uix.spinner import Spinner
 
 ##########################################
 # Class of Manager Data Base
@@ -23,7 +23,7 @@ from Data.Manager_db import DBConnection
 from Utils.datatable import DataTable
 ##########################################
 
-#Builder.load_file(r"Admin/admin.kv")
+Builder.load_file('Admin/admin.kv')
 
 
 class Notify(ModalView):
@@ -64,7 +64,7 @@ class AdminWindow(BoxLayout):
         crud_last = TextInput(hint_text='Last Name', multiline=False)
         crud_user = TextInput(hint_text='User Name', multiline=False)
         crud_pwd = TextInput(hint_text='Password', multiline=False)
-        # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
+        crud_des = Spinner(text='Operator', values=['Operator', 'Admin'])
         crud_submit = Button(text='Add', size_hint_x=None, width=100,
                              on_release=lambda x: self.add_user(crud_first.text,
                                                                 crud_last.text,
@@ -74,19 +74,18 @@ class AdminWindow(BoxLayout):
         target.add_widget(crud_last)
         target.add_widget(crud_user)
         target.add_widget(crud_pwd)
-        # target.add_widget(crud_des)
+        target.add_widget(crud_des)
         target.add_widget(crud_submit)
 
     # add user in DB
-    def add_user(self, first, last, user, pwd):
-        pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
+    def add_user(self, first, last, user, pwd, des):
+        pwd = hashlib.sha256(pwd.encode()).hexdigest()
         if first == '' or last == '' or user == '' or pwd == '':
             self.notify.add_widget(Label(text='[color=#FF0000][b]All Fields Required[/b][/color]', markup=True))
             self.notify.open()
             Clock.schedule_once(self.kill_switch, 1)
         else:
-            self.db.insert_reg('USERS',
-                                   {'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd})
+            self.db.insert_reg('USERS',{'first_names': first, 'last_names': last, 'user_names': user, 'passwords': pwd, 'role':des})
             content = self.ids.scrn_contents
             content.clear_widgets()
             users = self.get_users()
@@ -105,7 +104,7 @@ class AdminWindow(BoxLayout):
         crud_last = TextInput(hint_text='Last Name', multiline=False)
         crud_user = TextInput(hint_text='User Name', multiline=False)
         crud_pwd = TextInput(hint_text='Password', multiline=False)
-        # crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
+        crud_des = Spinner(text='Operator', values=['Operator', 'Administrator'])
         crud_submit = Button(text='Update', size_hint_x=None, width=100,
                              on_release=lambda x: self.update_user(crud_first.text,
                                                                    crud_last.text,
@@ -115,11 +114,11 @@ class AdminWindow(BoxLayout):
         target.add_widget(crud_last)
         target.add_widget(crud_user)
         target.add_widget(crud_pwd)
-        # target.add_widget(crud_des)
+        target.add_widget(crud_des)
         target.add_widget(crud_submit)
 
     # Update user in DB. The key is user_name
-    def update_user(self, first, last, user, pwd):
+    def update_user(self, first, last, user, pwd, role):
         pwd = hashlib.sha3_512(pwd.encode()).hexdigest()
 
         if user == '':
@@ -197,12 +196,12 @@ class AdminWindow(BoxLayout):
         last_names = []
         user_names = []
         passwords = []
-        self.db.execute("SELECT first_names, Last_names, user_names, passwords FROM USERS")
+        self.db.execute("SELECT * FROM USERS")
         for line in self.db._cursor.fetchall():
-            first_names.append(line[0])
-            last_names.append(line[1])
-            user_names.append(line[2])
-            pwd = line[3]
+            first_names.append(line[1])
+            last_names.append(line[2])
+            user_names.append(line[3])
+            pwd = line[4]
             if len(pwd) > 10:
                 pwd = pwd[:10] + '...'
             passwords.append(pwd)
@@ -259,7 +258,7 @@ class AdminWindow(BoxLayout):
         crud_weight = TextInput(hint_text='Product Weight', multiline=False)
         crud_qty = TextInput(hint_text='Qty Stocks', multiline=False)
         crud_submit = Button(text='Update', size_hint_x=None, width=100,
-                             on_release=lambda x: self.update_product(crud_code.text, crud_name.text, crud_weight.text,
+on_release=lambda x: self.update_product(crud_code.text, crud_name.text, crud_weight.text,
                                                                       crud_qty.text))
         target.add_widget(crud_code)
         target.add_widget(crud_name)
@@ -321,9 +320,10 @@ class AdminWindow(BoxLayout):
             Clock.schedule_once(self.kill_switch, 1)
         else:
             code = self.db.search_register('product_code', 'STOCKS', where=f"""product_code='{code}'""")
+            print(code)
             code = code[0]
             if code is None:
-                self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid UserName[/b][/color]', markup=True))
+                self.notify.add_widget(Label(text='[color=#FF0000][b]Invalid Product Code[/b][/color]', markup=True))
                 self.notify.open()
                 Clock.schedule_once(self.kill_switch, 1)
             else:
@@ -345,15 +345,15 @@ class AdminWindow(BoxLayout):
         product_names = []
         product_weighs = []
         qty_stocks = []
-        self.db.execute("SELECT product_code, product_name, product_weight, qty_stock FROM STOCKS")
+        self.db.execute("SELECT * FROM STOCKS")
         for line in self.db._cursor.fetchall():
-            product_codes.append(line[0])
-            name = line[1]
+            product_codes.append(line[1])
+            name = line[2]
             if len(name) > 10:
                 name = name[:10] + '...'
             product_names.append(name)
-            product_weighs.append(line[2])
-            qty_stocks.append(line[3])
+            product_weighs.append(line[3])
+            qty_stocks.append(line[4])
         products_length = len(product_codes)
         idx = 0
         while idx < products_length:
