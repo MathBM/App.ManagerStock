@@ -1,10 +1,10 @@
 import sys
+import re
 sys.path.append('./')
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.lang import Builder
-
 from Data.Manager_db import DBConnection
 
 Builder.load_file("Operating/operating.kv")
@@ -24,8 +24,7 @@ class OperatingWindow(BoxLayout):
     def update_purchases(self):
         pcode = self.ids.code_inp.text
         products_container = self.ids.products
-
-        target_code = self.stocks.search_register('product_code', 'STOCKS', f'{pcode}')
+        target_code = self.stocks.search_register('*', 'STOCKS', where=f"""product_code='{pcode}'""")
         if target_code is None:
             pass
         else:
@@ -33,10 +32,10 @@ class OperatingWindow(BoxLayout):
             products_container.add_widget(details)
 
             code = Label(text=pcode, size_hint_x=.2, color=(.06, .45, .45, 1))
-            name = Label(text=target_code['product_name'], size_hint_x=.3, color=(.06, .45, .45, 1))
+            name = Label(text=target_code[1], size_hint_x=.3, color=(.06, .45, .45, 1))
             qty = Label(text="1", size_hint_x=.1, color=(.06, .45, .45, 1))
             disc = Label(text="0.00", size_hint_x=.1, color=(.06, .45, .45, 1))
-            price = Label(text=target_code['product_price'], size_hint_x=.1, color=(.06, .45, .45, 1))
+            price = Label(text="0.00", size_hint_x=.1, color=(.06, .45, .45, 1))
             total = Label(text="0.00", size_hint_x=.2, color=(.06, .45, .45, 1))
             details.add_widget(code)
             details.add_widget(name)

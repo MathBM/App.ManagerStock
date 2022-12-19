@@ -1,15 +1,9 @@
-import sys
-sys.path.append('./')
-
-from threading import Thread
-
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 
 from Admin.admin import AdminWindow
 from Signing.signing import SigninWindow
 from Operating.operating import OperatingWindow
-from Peripheral.Client import ClienteLeitorCB
 
 class MainWindown(BoxLayout):
 
@@ -29,8 +23,7 @@ class MainApp(App):
 
 
 if __name__ == '__main__':
-    target=MainApp().run()
-    
+    MainApp().run()
 
 else:
     Exception("Execution Error")
