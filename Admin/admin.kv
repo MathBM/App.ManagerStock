@@ -63,7 +63,7 @@
                 background_color: (.06, .47, .47, 1)
                 background_normal: ''
                 group: 'admin_navs'
-                on_state: root.change_screen(self)
+                on_state: root.change_screen('scrn_content')
             ToggleButton:
                 id: product_toggle
                 text: 'Manage Products'
@@ -71,7 +71,7 @@
                 background_color: (.06, .47, .47, 1)
                 background_normal: ''
                 group: 'admin_navs'
-                on_state: root.change_screen(self)
+                on_state: root.change_screen('scrn_product_content')
             ToggleButton:
                 id: analysis_toggle
                 text: 'Product Analysis'
@@ -79,7 +79,7 @@
                 background_color: (.06, .47, .47, 1)
                 background_normal: ''
                 group: 'admin_navs'
-                on_state: root.change_screen(self)
+                on_state: root.change_screen('scrn_analysis')
             Label:
                 id: sp
                 text:''

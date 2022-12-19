@@ -23,6 +23,8 @@ from Data.Manager_db import DBConnection
 from Utils.datatable import DataTable
 ##########################################
 
+from Peripheral.Client import ClienteLeitorCB
+
 Builder.load_file('Admin/admin.kv')
 
 
@@ -36,6 +38,10 @@ class AdminWindow(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        
+        #Peripheral Client
+        self.client_p = ClienteLeitorCB()
+        self.client_p.conectar()
 
         self.notify = Notify()
 
@@ -69,7 +75,7 @@ class AdminWindow(BoxLayout):
                              on_release=lambda x: self.add_user(crud_first.text,
                                                                 crud_last.text,
                                                                 crud_user.text,
-                                                                crud_pwd.text))
+                                                                crud_pwd.text. crud_des))
         target.add_widget(crud_first)
         target.add_widget(crud_last)
         target.add_widget(crud_user)
@@ -198,6 +204,7 @@ class AdminWindow(BoxLayout):
         passwords = []
         self.db.execute("SELECT * FROM USERS")
         for line in self.db._cursor.fetchall():
+            print(line)
             first_names.append(line[1])
             last_names.append(line[2])
             user_names.append(line[3])
@@ -221,7 +228,7 @@ class AdminWindow(BoxLayout):
         target = self.ids.ops_fields_p
         target.clear_widgets()
 
-        crud_code = TextInput(hint_text='Product Code', multiline=False)
+        crud_code = TextInput (hint_text = 'Product Code', multiline=False, text = self.client_p.requisitarLeitura())
         crud_name = TextInput(hint_text='Product Name', multiline=False)
         crud_weight = TextInput(hint_text='Product Weight', multiline=False)
         crud_qty = TextInput(hint_text='Qty Stocks', multiline=False)
@@ -347,13 +354,13 @@ on_release=lambda x: self.update_product(crud_code.text, crud_name.text, crud_we
         qty_stocks = []
         self.db.execute("SELECT * FROM STOCKS")
         for line in self.db._cursor.fetchall():
-            product_codes.append(line[1])
-            name = line[2]
+            product_codes.append(line[0])
+            name = line[1]
             if len(name) > 10:
                 name = name[:10] + '...'
             product_names.append(name)
-            product_weighs.append(line[3])
-            qty_stocks.append(line[4])
+            product_weighs.append(line[2])
+            qty_stocks.append(line[3])
         products_length = len(product_codes)
         idx = 0
         while idx < products_length:
@@ -364,15 +371,11 @@ on_release=lambda x: self.update_product(crud_code.text, crud_name.text, crud_we
             idx += 1
         return _stocks
 
-    # Change Screens of admin menu
-    def change_screen(self, instance):
-        if instance.text == 'Manage Products':
-            self.ids.scrn_mngr.current = 'scrn_product_content'
-        elif instance.text == 'Manage Users':
-            self.ids.scrn_mngr.current = 'scrn_content'
-        else:
-            self.ids.scrn_mngr.current = 'scrn_analysis'
+    
 
+    # Change Screens of admin menu
+    def change_screen(self, screen_name):
+        self.ids.scrn_mngr.current = screen_name
 
 class AdminApp(App):
     def build(self):
