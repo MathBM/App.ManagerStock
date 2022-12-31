@@ -23,8 +23,6 @@ from Data.Manager_db import DBConnection
 from Utils.datatable import DataTable
 ##########################################
 
-from Peripheral.Client import ClienteLeitorCB
-
 Builder.load_file('Admin/admin.kv')
 
 
@@ -39,10 +37,6 @@ class AdminWindow(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
-        #Peripheral Client
-        self.client_p = ClienteLeitorCB()
-        self.client_p.conectar()
-
         self.notify = Notify()
 
         # Connection with DB
@@ -231,7 +225,7 @@ class AdminWindow(BoxLayout):
     def add_product_fields(self):
         target = self.ids.ops_fields_p
         target.clear_widgets()
-        crud_code = TextInput (hint_text = 'Product Code', multiline=False, text=self.client_p.requisitarLeitura())
+        crud_code = TextInput (hint_text = 'Product Code', multiline=False)
         crud_name = TextInput(hint_text='Product Name', multiline=False)
         crud_weight = TextInput(hint_text='Product Weight', multiline=False)
         crud_qty = TextInput(hint_text='Qty Stocks', multiline=False)
