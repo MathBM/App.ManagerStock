@@ -1,0 +1,31 @@
+version: '3'
+volumes:
+  data:
+services:
+  mysql:
+    image: mysql
+
+    ports:
+      - 3306:3306
+
+    environment:
+            MYSQL_ROOT_PASSWORD: 'root'
+            MYSQL_DATABASE: 'Silver_POS' 
+            MYSQL_USER: 'user'
+            MYSQL_PASSWORD: 'user'
+
+    volumes:
+      - ./scripts:/scripts
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./Data:/var/lib/mysql
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1

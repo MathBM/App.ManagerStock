@@ -1,3 +1,5 @@
+#: import Window kivy.core.window.Window
+
 <FlatButton@ButtonBehavior+Label>:
     font_size: 16
 
@@ -29,6 +31,7 @@
         FlatButton:
             text:"X"
             size_hint_x: .1
+            on_release: Window.close()
     BoxLayout:
         orientation: "vertical"
         padding: main_win.space_x, 10

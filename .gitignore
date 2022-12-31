@@ -1,0 +1,3 @@
+#Ignora os caches montados pelo Kivy, para a montagem do front end.
+__pycache__
+Data

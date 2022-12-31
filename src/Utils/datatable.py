@@ -5,7 +5,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from collections import OrderedDict
-from Data.Manager_db import DBConnection
+from Utils.Manager_db import DBConnection
 
 
 Builder.load_string('''

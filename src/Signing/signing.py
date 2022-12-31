@@ -4,7 +4,7 @@ sys.path.append('./')
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
-from Data.Manager_db import DBConnection
+from Utils.Manager_db import DBConnection
 
 
 
@@ -35,6 +35,7 @@ class SigninWindow(BoxLayout):
             else:
                 passw = hashlib.sha256(passw.encode()).hexdigest()
                 if passw == user[4]:
+                    self.parent.parent.parent.ids.scrn_op.children[0].ids.loggedin_user.text = uname
                     if user[5] == 'Admin':
                         info.text = '[color=#00FF00]Logged In Successfully!!![/color]'
                         self.chance_screen('scrn_admin')

@@ -19,7 +19,7 @@ from kivy.uix.spinner import Spinner
 
 ##########################################
 # Class of Manager Data Base
-from Data.Manager_db import DBConnection
+from Utils.Manager_db import DBConnection
 from Utils.datatable import DataTable
 ##########################################
 
@@ -368,9 +368,17 @@ on_release=lambda x: self.update_product(crud_code.text, crud_name.text, crud_we
             idx += 1
         return _stocks
 
+    def logout(self):
+        self.db.conclose()
+        self.change_screen("scrn_si")
+
     # Change Screens of admin menu
     def change_screen(self, screen_name):
+        self.parent.parent.current = screen_name
+
+    def change_screen_mngr(self, screen_name):
         self.ids.scrn_mngr.current = screen_name
+
 
 class AdminApp(App):
     def build(self):

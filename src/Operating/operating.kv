@@ -29,6 +29,10 @@
             id: loggedin_user
             text: 'Username'
             color: (1, 1, 1, 1)
+            size_hint_x: .1
+            underline: True
+            on_release: root.logout()
+
     BoxLayout:
         id: current
         size_hint_y: None

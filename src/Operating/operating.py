@@ -5,7 +5,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.lang import Builder
-from Data.Manager_db import DBConnection
+from Utils.Manager_db import DBConnection
 
 Builder.load_file("Operating/operating.kv")
 
@@ -20,6 +20,10 @@ class OperatingWindow(BoxLayout):
         self.cart = []
         self.qty = []
         self.total = 0.00
+
+    def logout(self):
+        self.db.conclose()
+        self.change_screen('scrn_si')
 
     def update_purchases(self):
         pcode = self.ids.code_inp.text
@@ -75,6 +79,21 @@ class OperatingWindow(BoxLayout):
                 nu_preview = '\n'.join([prev_text, pname + '\t\tx' + pqty + '\t\t' + str(pprice), purchase_total])
                 preview.text = nu_preview
 
+    def change_screen(self, screen_name):
+        """ Method to chance Screen
+
+            Args:
+                screen_name(str): Name of screen to change.
+            
+            Execept:
+                Error to change Screen.
+            Returns:
+                None.
+        """
+        try:
+            self.parent.parent.current = screen_name
+        except:
+            print("Error: Not Possible change Screen.")
 
 class OperatingApp(App):
     def build(self):
