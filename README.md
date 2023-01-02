@@ -1,13 +1,13 @@
-# App Manager stocks 
+# POS_System 
 
-Application for manager and Stock Product
+Aplicação para gerênciamento e controle de vendas e estoque.
 
 ### Status: Developing ⚠️ 
 
 [![NPM](https://img.shields.io/npm/l/react)](https://github.com/MathBM/App.ManagerStock/blob/master/LICENSE)
 
 ## Sobre o Projeto
-App Manager Stock é uma aplicação Monolítica Desenvolvida em Kivy e Python para praticar programação.
+POS_System é uma aplicação Monolítica Desenvolvida em Kivy e Python para praticar programação.
 
 A aplicação consiste em um sistema POS (Point of Sale), em que há é segregado em duas partes a do administrador e operador. Há a possibilidade de gerênciar usuários e produtos por parte do administrador, possui a frente de caixa para um operador poder utilizar na venda de produtos que foram préviamente cadastrados.
 
@@ -32,5 +32,26 @@ Há a possibilidade de empacotar a aplicação para qualquer tipo de sistema dev
    <img src="https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white">
   </div>
   
-## Como rodar
+## How to Run
 
+  1º Clone Repo
+```bash
+git clone https://github.com/MathBM/POS_System.git
+```
+  2ª Change to directory of Project
+```bash 
+cd ~/POS_System
+```
+  3º Install dependes of requeriments.txt
+```bash
+pip install requeriments.txt
+```
+  4º Run Docker Compose
+```bash
+docker-compose up
+```
+  5º Run main archive
+```bash
+python main.py
+```
+  
