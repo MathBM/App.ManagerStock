@@ -1,2 +1,6 @@
-# App.ManagerStock
- Application for manager and Stock Product With Kivy
+# App Manager stocks 
+
+Application for manager and Stock Product
+
+### Status: Developing ⚠️ 
+
