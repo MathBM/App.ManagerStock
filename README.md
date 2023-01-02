@@ -42,16 +42,30 @@ git clone https://github.com/MathBM/POS_System.git
 ```bash 
 cd ~/POS_System
 ```
-  3º Install dependes of requeriments.txt
+  3º Creates Data dir
+```bash
+mkdir Data
+```
+  4º Install dependes of requeriments.txt
 ```bash
 pip install requeriments.txt
 ```
-  4º Run Docker Compose
+  5º Run Docker Compose
 ```bash
 docker-compose up
 ```
-  5º Run main archive
+  6º Run main archive
 ```bash
 python main.py
 ```
-  
+
+### Images
+
+#### Login Screen
+<img src="https://github.com/MathBM/POS_System/blob/master/assets/Login_Screen.png">
+
+### Admin Screen
+<img src="https://github.com/MathBM/POS_System/blob/master/assets/Admin_Screen_Logins.png">
+
+## Operator Screen
+<img src="https://github.com/MathBM/POS_System/blob/master/assets/Operator_Screen_Sale.png">
