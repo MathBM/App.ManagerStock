@@ -1,6 +1,6 @@
 # POS_System 
 
-Aplicação para gerênciamento e controle de vendas e estoque.
+Aplicação para gerênciamento e controle de vendas.
 
 ### Status: Developing ⚠️ 
 
