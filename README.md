@@ -4,3 +4,33 @@ Application for manager and Stock Product
 
 ### Status: Developing ⚠️ 
 
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/MathBM/App.ManagerStock/blob/master/LICENSE)
+
+## Sobre o Projeto
+App Manager Stock é uma aplicação Monolítica Desenvolvida em Kivy e Python para praticar programação.
+
+A aplicação consiste em um sistema POS (Point of Sale), em que há é segregado em duas partes a do administrador e operador. Há a possibilidade de gerênciar usuários e produtos por parte do administrador, possui a frente de caixa para um operador poder utilizar na venda de produtos que foram préviamente cadastrados.
+
+Há a possibilidade de empacotar a aplicação para qualquer tipo de sistema devido a versatilidade do Kivy.
+
+# Tecnologias Utilizadas:
+
+## Front-End
+  <div>
+    <img src="https://kivy.org/static/images/logo_kivy_white.png" width=5%>
+    <h4> Kivy </h4>
+  </div>
+
+## Back-End
+  <div>
+    <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"> 
+  </div>
+
+## More
+  <div>
+   <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white">
+   <img src="https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white">
+  </div>
+  
+## Como rodar
+
